@@ -1,0 +1,156 @@
+import React, { useState, useEffect } from 'react';
+import { ChevronRight, ChevronDown, BookOpen, Puzzle } from 'lucide-react';
+
+// Main Spanish Learning Course Component
+const SpanishLearningCourse = () => {
+  const [currentLevel, setCurrentLevel] = useState('basic');
+  const [selectedModule, setSelectedModule] = useState(null);
+  const [progress, setProgress] = useState({
+    basic: 0,
+    intermediate: 0,
+    advanced: 0
+  });
+
+  const courseStructure = {
+    basic: [
+      {
+        title: 'Alfabeto y Pronunciación',
+        description: 'Fundamentos del alfabeto español y pronunciación',
+        lessons: [
+          'Letras del alfabeto',
+          'Sonidos únicos',
+          'Pronunciación básica'
+        ]
+      },
+      {
+        title: 'Saludos y Conversaciones Básicas',
+        description: 'Vocabulario inicial para presentaciones',
+        lessons: [
+          'Saludos formales e informales',
+          'Números básicos',
+          'Días y meses'
+        ]
+      }
+    ],
+    intermediate: [
+      {
+        title: 'Tiempos Verbales Intermedios',
+        description: 'Dominio de pasado y futuro',
+        lessons: [
+          'Pasado Simple (Pretérito)',
+          'Futuro Simple',
+          'Verbos regulares e irregulares'
+        ]
+      }
+    ],
+    advanced: [
+      {
+        title: 'Tiempos Verbales Complejos',
+        description: 'Conjugaciones avanzadas',
+        lessons: [
+          'Pretérito Perfecto Compuesto',
+          'Pluscuamperfecto',
+          'Futuro Perfecto'
+        ]
+      }
+    ]
+  };
+
+  const updateProgress = (level) => {
+    // Simple progress tracking logic
+    const newProgress = {...progress};
+    newProgress[level] = Math.min(100, newProgress[level] + 10);
+    setProgress(newProgress);
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <h1 className="text-3xl font-bold text-center mb-6 text-blue-700">
+        Curso Completo de Español
+      </h1>
+
+      {/* Level Selection */}
+      <div className="flex justify-center space-x-4 mb-6">
+        {['basic', 'intermediate', 'advanced'].map((level) => (
+          <button
+            key={level}
+            onClick={() => setCurrentLevel(level)}
+            className={`px-4 py-2 rounded-full font-semibold transition-colors 
+              ${currentLevel === level 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-gray-200 text-gray-700 hover:bg-blue-100'}`}
+          >
+            {level === 'basic' ? 'Básico' : 
+             level === 'intermediate' ? 'Intermedio' : 'Avanzado'}
+          </button>
+        ))}
+      </div>
+
+      {/* Progress Tracking */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-2">Progreso de Aprendizaje</h2>
+        <div className="flex space-x-4">
+          {Object.entries(progress).map(([level, percentage]) => (
+            <div key={level} className="w-full bg-gray-200 rounded-full h-4">
+              <div 
+                className="bg-green-500 h-4 rounded-full" 
+                style={{width: `${percentage}%`}}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Module Selection */}
+      <div>
+        <h2 className="text-2xl font-bold mb-4">
+          Módulos de {currentLevel === 'basic' ? 'Nivel Básico' : 
+                     currentLevel === 'intermediate' ? 'Nivel Intermedio' : 
+                     'Nivel Avanzado'}
+        </h2>
+        {courseStructure[currentLevel].map((module, index) => (
+          <div 
+            key={index} 
+            className="border rounded-lg mb-4 overflow-hidden"
+          >
+            <div 
+              onClick={() => setSelectedModule(selectedModule === index ? null : index)}
+              className="flex justify-between items-center p-4 bg-gray-100 cursor-pointer hover:bg-gray-200"
+            >
+              <div className="flex items-center">
+                <BookOpen className="mr-3 text-blue-600" />
+                <span className="font-semibold">{module.title}</span>
+              </div>
+              {selectedModule === index ? <ChevronDown /> : <ChevronRight />}
+            </div>
+            
+            {selectedModule === index && (
+              <div className="p-4">
+                <p className="text-gray-600 mb-3">{module.description}</p>
+                <ul className="space-y-2">
+                  {module.lessons.map((lesson, lessonIndex) => (
+                    <li 
+                      key={lessonIndex} 
+                      className="flex items-center bg-white p-2 rounded shadow-sm"
+                    >
+                      <Puzzle className="mr-3 text-green-600" />
+                      {lesson}
+                      <button 
+                        onClick={() => updateProgress(currentLevel)}
+                        className="ml-auto bg-blue-500 text-white px-2 py-1 rounded text-xs"
+                      >
+                        Practicar
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default SpanishLearningCourse;
